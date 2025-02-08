@@ -78,7 +78,7 @@
 <h3>1️⃣ Clone the Repository</h3>
 <pre>
 git clone https://github.com/muldercw/Flask-App-in-Docker-with-GitHub-Actions.git
-cd YOUR-REPO
+cd Flask-App-in-Docker-with-GitHub-Actions
 </pre>
 
 <h3>2️⃣ Build the Docker Image</h3>
