@@ -1,0 +1,64 @@
+name: Build and Test Flask in Docker
+
+on:
+  push:
+    branches:
+      - main  # Runs when code is pushed to main
+
+jobs:
+  build-test-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Create Flask App
+      run: |
+        mkdir app
+        cat <<EOF > app/app.py
+        from flask import Flask
+
+        app = Flask(__name__)
+
+        @app.route('/')
+        def home():
+            return "Hello, Flask is running in a container!"
+
+        if __name__ == '__main__':
+            app.run(host='0.0.0.0', port=5000)
+        EOF
+
+    - name: Create Dockerfile
+      run: |
+        cat <<EOF > app/Dockerfile
+        FROM python:3.9
+
+        WORKDIR /app
+
+        COPY app.py /app/
+
+        RUN pip install flask
+
+        EXPOSE 5000
+
+        CMD ["python", "app.py"]
+        EOF
+
+    - name: Build Docker Image
+      run: |
+        docker build -t flask-app ./app
+
+    - name: Run Docker Container
+      run: |
+        docker run -d -p 5000:5000 --name flask-container flask-app
+        sleep 5  # Allow the container time to start
+
+    - name: Test Flask App Response
+      run: |
+        curl -s --retry 5 --retry-delay 2 http://localhost:5000 | grep "Hello, Flask is running in a container!"
+
+    - name: Stop and Remove Container
+      run: |
+        docker stop flask-container
+        docker rm flask-container
