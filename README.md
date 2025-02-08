@@ -77,7 +77,7 @@
 
 <h3>1️⃣ Clone the Repository</h3>
 <pre>
-git clone https://github.com/muldercw/dockertest.git
+git clone https://github.com/muldercw/Flask-App-in-Docker-with-GitHub-Actions.git
 cd YOUR-REPO
 </pre>
 
